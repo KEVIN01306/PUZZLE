@@ -26,7 +26,7 @@ const GamePuzzle = () => {
 
     
 
-    const selectImagen = BgImages[Math.floor(Math.random() * BgImages.length )]
+    const [selectImagen] = useState<string>(BgImages[Math.floor(Math.random() * BgImages.length )])
 
     const [movements,setMovements] = useState<number>(0)
     
@@ -85,7 +85,7 @@ const GamePuzzle = () => {
 
         <div className={`w-full max-w-3xl mx-auto p-2 `} > 
             <div 
-                className="w-full per aspect-[4/6] max-w-3xl mx-auto p-2 sm:aspect-[14/10] relative border-2 border-yellow-600/20 bg-yellow-600/35 text-primary-content rounded-box flex 
+                className="w-full per aspect-[4/6] max-w-3xl mx-auto p-2 sm:aspect-[14/10] relative borde border-yellow-600/20 bg-yellow-600/35 text-primary-content rounded-box flex 
                             flex-col items-center 
                             shadow-[0_15px_0_rgba(159,117,29,0.67),_0_4px_6px_rgba(0,0,0,0.05)] ">
                 
