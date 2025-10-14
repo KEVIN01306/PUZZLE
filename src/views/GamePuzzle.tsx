@@ -1,12 +1,13 @@
 import { useState } from "react";
 import Part from "../components/Part";
-
+import { toast } from "react-toastify"
 type Selects = {
     index: number | null,
     part: number | null
 }
 
 const GamePuzzle = () => {
+
 
     const [parts,setParts] = useState([
                     1, 5, 6, 
@@ -19,9 +20,9 @@ const GamePuzzle = () => {
         part: null
     })
     
-    const testMove = (index: number) => {
+    const movePart = (index: number) => {
         console.log(index,selects.part)
-        if (selects.index!= null) {
+        if (selects.index != null && moveValid(index) ) {
             setParts( prevLsit =>
                 prevLsit.map(( partItem,indexItem ) => {
                     if (indexItem == index){
@@ -36,7 +37,24 @@ const GamePuzzle = () => {
             )
 
             changeItemSelect(null,null)
+        }else {
+            toast.error("No puedes realizar este movimiento")
         }
+
+    }
+
+    const moveValid = (index: number ) => {
+
+        if (selects.index == null ) {
+            return false
+        }
+
+        if(index == Number(selects.index) + 1 ||  index == Number(selects.index) - 1 || index == Number(selects.index) + 3 || index == Number(selects.index) - 3){
+            return true
+        }
+        
+
+        return false
     }
 
     const changeItemSelect = (newSelect: number | null, newPart: number | null) => {
@@ -74,7 +92,7 @@ const GamePuzzle = () => {
                     >
                         {parts.map((part, index) => (
                         
-                            <Part key={index} part={part} index={index} changeSelect={changeItemSelect}  move={testMove}/>
+                            <Part key={index} part={part} index={index} changeSelect={changeItemSelect}  move={movePart}/>
                         ))}
                         
                     </div>
