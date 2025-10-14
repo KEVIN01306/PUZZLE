@@ -1,6 +1,10 @@
 import { useState } from "react";
 import Part from "../components/Part";
 import { toast } from "react-toastify"
+import { ViewPuzzle } from "../components/ViewPuzzle";
+import { BgImages } from "../utilities/BgImages";
+import { shuffleArray } from "../utilities/Mingle";
+
 type Selects = {
     index: number | null,
     part: number | null
@@ -9,16 +13,22 @@ type Selects = {
 const GamePuzzle = () => {
 
 
-    const [parts,setParts] = useState([
-                    1, 5, 6, 
-                    4, 7, 3, 
-                    9, 2, null
-                ])
+    const [parts,setParts] = useState<any[]>(shuffleArray([
+                    1, 2, 3, 
+                    4, 5, 6, 
+                    7, 8, null
+                ]))
 
     const [selects, setSelects] = useState<Selects>({
         index: null,
         part: null
     })
+
+    
+
+    const [selectImagen,setSelectImagen] = useState<string>(BgImages[Math.floor(Math.random() * BgImages.length )])
+
+    const [movements,setMovements] = useState<number>(0)
     
     const movePart = (index: number) => {
         console.log(index,selects.part)
@@ -37,6 +47,7 @@ const GamePuzzle = () => {
             )
 
             changeItemSelect(null,null)
+            setMovements(prev => prev + 1)
         }else {
             toast.error("No puedes realizar este movimiento")
         }
@@ -49,7 +60,10 @@ const GamePuzzle = () => {
             return false
         }
 
-        if(index == Number(selects.index) + 1 ||  index == Number(selects.index) - 1 || index == Number(selects.index) + 3 || index == Number(selects.index) - 3){
+        if(((index == Number(selects.index) + 1 && (Number(selects.index) + 1 != 3 &&  Number(selects.index) + 1 != 6 ) || 
+            index == Number(selects.index) - 1 && (Number(selects.index) - 1 != 2 &&  Number(selects.index) - 1 != 5) ) || 
+            index == Number(selects.index) + 3 || 
+            index == Number(selects.index) - 3)){
             return true
         }
         
@@ -71,15 +85,17 @@ const GamePuzzle = () => {
 
         <div className={`w-full max-w-3xl mx-auto p-2 `} > 
             <div 
-                className="w-full per aspect-[4/6] max-w-3xl mx-auto p-2 sm:aspect-[14/10] relative bg-yellow-600/35 text-primary-content rounded-box flex 
+                className="w-full per aspect-[4/6] max-w-3xl mx-auto p-2 sm:aspect-[14/10] relative border-2 border-yellow-600/20 bg-yellow-600/35 text-primary-content rounded-box flex 
                             flex-col items-center 
                             shadow-[0_15px_0_rgba(159,117,29,0.67),_0_4px_6px_rgba(0,0,0,0.05)] ">
                 
-                <div className="flex flex-row justify-between items-center w-full p-2 h-1/4">
-                    <h1>Puzzle</h1>
+                <div className="flex flex-row relative justify-between items-center w-full p-2 h-1/4">
+                    <ViewPuzzle img={selectImagen}/>
+                    <h2>movimientos: {movements}</h2>
                 </div>
-
+            
                 <div className="w-full flex-grow flex items-center justify-center p-4 ">
+                    
                     <div 
                         className={`
                             w-full sm:w-3/6 aspect-[4/4] relative bg-yellow-600/5 text-primary-content rounded-box p-2 
@@ -92,7 +108,7 @@ const GamePuzzle = () => {
                     >
                         {parts.map((part, index) => (
                         
-                            <Part key={index} part={part} index={index} changeSelect={changeItemSelect}  move={movePart}/>
+                            <Part img={selectImagen} key={index} part={part} index={index} changeSelect={changeItemSelect}  move={movePart}/>
                         ))}
                         
                     </div>
