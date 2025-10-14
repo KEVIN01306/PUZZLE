@@ -26,7 +26,7 @@ const GamePuzzle = () => {
 
     
 
-    const [selectImagen,setSelectImagen] = useState<string>(BgImages[Math.floor(Math.random() * BgImages.length )])
+    const selectImagen = BgImages[Math.floor(Math.random() * BgImages.length )]
 
     const [movements,setMovements] = useState<number>(0)
     
