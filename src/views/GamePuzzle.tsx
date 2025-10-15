@@ -18,7 +18,7 @@ const GamePuzzle = () => {
 
     const [parts,setParts] = useState<any[]>(shuffleArrayNull(shuffleArray([
                     1, 2, 3, 
-                    4, null, 5,
+                    4, 5, 6,
                     7, 8, 9
                 ])))
 
