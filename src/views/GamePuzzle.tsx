@@ -6,7 +6,6 @@ import { BgImages } from "../utilities/BgImages";
 import { shuffleArray,shuffleArrayNull } from "../utilities/Mingle";
 import { ValidPuzzle } from "../utilities/OrderPuzzle";
 import { CronometroReducer, CronometroInitialState } from "../utilities/Cronometros";
-import type { CronometroState} from "../utilities/Cronometros";
 import Counters from "../components/Counters";
 
 type Selects = {
@@ -17,11 +16,11 @@ type Selects = {
 const GamePuzzle = () => {
 
 
-    const [parts,setParts] = useState<any[]>([
+    const [parts,setParts] = useState<any[]>(shuffleArrayNull(shuffleArray([
                     1, 2, 3, 
                     4, null, 5,
                     7, 8, 9
-                ])
+                ])))
 
     const [selects, setSelects] = useState<Selects>({
         index: null,
