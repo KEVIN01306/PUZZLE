@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Part from "../components/Part";
 import { toast } from "react-toastify"
 import { ViewPuzzle } from "../components/ViewPuzzle";
 import { BgImages } from "../utilities/BgImages";
-import { shuffleArray } from "../utilities/Mingle";
+import { shuffleArray,shuffleArrayNull } from "../utilities/Mingle";
+import { ValidPuzzle } from "../utilities/OrderPuzzle";
+import { CronometroReducer, CronometroInitialState } from "../utilities/Cronometros";
+import type { CronometroState} from "../utilities/Cronometros";
+import Counters from "../components/Counters";
 
 type Selects = {
     index: number | null,
@@ -13,11 +17,11 @@ type Selects = {
 const GamePuzzle = () => {
 
 
-    const [parts,setParts] = useState<any[]>(shuffleArray([
+    const [parts,setParts] = useState<any[]>([
                     1, 2, 3, 
-                    4, 5, 6, 
-                    7, 8, null
-                ]))
+                    4, null, 5,
+                    7, 8, 9
+                ])
 
     const [selects, setSelects] = useState<Selects>({
         index: null,
@@ -27,11 +31,10 @@ const GamePuzzle = () => {
     
 
     const [selectImagen] = useState<string>(BgImages[Math.floor(Math.random() * BgImages.length )])
-
     const [movements,setMovements] = useState<number>(0)
+    const [CronometroState,CronometropDispatch] =  useReducer(CronometroReducer,CronometroInitialState)
     
     const movePart = (index: number) => {
-        console.log(index,selects.part)
         if (selects.index != null && moveValid(index) ) {
             setParts( prevLsit =>
                 prevLsit.map(( partItem,indexItem ) => {
@@ -71,27 +74,39 @@ const GamePuzzle = () => {
         return false
     }
 
+
+    useEffect(() => {
+        console.log(ValidPuzzle(parts))
+    }, [parts])
+
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            CronometropDispatch({type: "TIME_INCREMENT"})
+        },1000)
+
+
+        return () => clearInterval(interval)
+    }, [])
+
     const changeItemSelect = (newSelect: number | null, newPart: number | null) => {
         setSelects({
             index: newSelect,
             part: newPart
         });
-
-        console.log("pieza seleccionada: "+selects.index, selects.part)
-
     }
 
     return (
 
         <div className={`w-full max-w-3xl mx-auto p-2 `} > 
-            <div 
-                className="w-full per aspect-[4/6] max-w-3xl mx-auto p-2 sm:aspect-[14/10] relative borde border-yellow-600/20 bg-yellow-600/35 text-primary-content rounded-box flex 
+            <div className="w-full per aspect-[4/7] max-w-3xl mx-auto p-2 sm:aspect-[14/10] relative borde
+                            border-yellow-600/20 bg-yellow-600/35 text-primary-content rounded-box flex 
                             flex-col items-center 
                             shadow-[0_15px_0_rgba(159,117,29,0.67),_0_4px_6px_rgba(0,0,0,0.05)] ">
                 
-                <div className="flex flex-row relative justify-between items-center w-full p-2 h-1/4">
+                <div className="flex flex-col sm:flex-row relative justify-between items-center w-full p-2 h-1/4">
                     <ViewPuzzle img={selectImagen}/>
-                    <h2>movimientos: {movements}</h2>
+                    <Counters movements={movements} time={CronometroState.time}/>
                 </div>
             
                 <div className="w-full flex-grow flex items-center justify-center p-4 ">
