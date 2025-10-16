@@ -1,12 +1,9 @@
 import type{ CronometroType } from "../utilities/Cronometros";
+import TimeCounter from "./TimeCounter";
 
 interface CountersProps{
     movements: number;
     time: CronometroType;
-}
-
-interface CustomCSSProperties extends React.CSSProperties {
-    '--value': number;
 }
 
 const Counters = ({movements, time}:CountersProps) => {
@@ -23,7 +20,7 @@ const Counters = ({movements, time}:CountersProps) => {
                     
                     shadow-[0_8px_0_rgba(159,117,29,0.67),_0_4px_6px_rgba(255,255,255,0.7)]
                     ">
-                    Movimientos
+                    Movements
                 </div>
 
                 <div className="w-28 flex flex-row justify-center items-center shadow-[inset_0_0_10px_3px_rgba(159,117,29,0.67),_inset_0_-6px_10px_rgba(255,255,255,0.7)] rounded-2xl p-3">
@@ -44,13 +41,7 @@ const Counters = ({movements, time}:CountersProps) => {
                 </div>
 
                 <div className="w-28 flex flex-row justify-center items-center shadow-[inset_0_0_10px_3px_rgba(159,117,29,0.67),_inset_0_-6px_10px_rgba(255,255,255,0.7)] rounded-2xl p-3">
-                    <div className="flex gap-3">
-                            <span className="countdown font-mono text-2xl">
-                                <span style={{"--value":time.hour}  as CustomCSSProperties } aria-live="polite" aria-label={`time.hour`}>{time.hour}</span>:
-                                <span style={{"--value":time.minute} as CustomCSSProperties } aria-live="polite" aria-label={`time.minute`}>{time.minute}</span>:
-                                <span style={{"--value":time.sec} as CustomCSSProperties } aria-live="polite" aria-label={`time.sec`}>{time.sec}</span>
-                            </span>
-                    </div>
+                    <TimeCounter time={time}/>
                 </div>
                 
             </div>

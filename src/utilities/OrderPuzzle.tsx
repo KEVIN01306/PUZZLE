@@ -1,3 +1,4 @@
+import { shuffleArray, shuffleArrayNull } from "./Mingle";
 
 
 
@@ -24,3 +25,7 @@ export const ValidPuzzle = (PuzzleScrambled: any[]) => {
 
     return true
 }
+
+export const scrambledPuzzle = ( Puzzle: any[]) =>{
+    return shuffleArray(shuffleArrayNull(Puzzle))
+} 

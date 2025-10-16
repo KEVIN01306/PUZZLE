@@ -15,7 +15,6 @@ export const shuffleArrayNull = (array: any[]) => {
     const newArray = [...array];
     const partRandomIndex = Math.floor(Math.random() * newArray.length)
     for ( let i = newArray.length ; i >= 0; i--){
-        console.log("index lista: "+i+" indexRandom: "+partRandomIndex)
         if ( i == partRandomIndex){
             newArray[i] = null ;
         }

@@ -63,7 +63,6 @@ interface CronometroAction{
 }
 
 export const CronometroInitialState = {
-    
     time: {
         sec: 0,
         minute: 0,

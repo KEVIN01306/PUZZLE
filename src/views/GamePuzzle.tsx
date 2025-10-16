@@ -3,10 +3,12 @@ import Part from "../components/Part";
 import { toast } from "react-toastify"
 import { ViewPuzzle } from "../components/ViewPuzzle";
 import { BgImages } from "../utilities/BgImages";
-import { shuffleArray,shuffleArrayNull } from "../utilities/Mingle";
+import { scrambledPuzzle } from "../utilities/OrderPuzzle";
 import { ValidPuzzle } from "../utilities/OrderPuzzle";
-import { CronometroReducer, CronometroInitialState } from "../utilities/Cronometros";
+import { CronometroReducer, CronometroInitialState, type CronometroType } from "../utilities/Cronometros";
 import Counters from "../components/Counters";
+import { usePlayerListStore } from "../store/usePlayerListStore";
+import ModalSummary from "../components/ModalSummary";
 
 type Selects = {
     index: number | null,
@@ -15,23 +17,16 @@ type Selects = {
 
 const GamePuzzle = () => {
 
-
-    const [parts,setParts] = useState<any[]>(shuffleArrayNull(shuffleArray([
-                    1, 2, 3, 
-                    4, 5, 6,
-                    7, 8, 9
-                ])))
-
+    const [parts,setParts] = useState<any[]>(scrambledPuzzle([1, 2, 3, 4, 4,5,7, 8, 9]))
     const [selects, setSelects] = useState<Selects>({
         index: null,
         part: null
     })
-
-    
-
+    const [openSummary, setOpenSummary] = useState<boolean>(false)
     const [selectImagen] = useState<string>(BgImages[Math.floor(Math.random() * BgImages.length )])
     const [movements,setMovements] = useState<number>(0)
     const [CronometroState,CronometropDispatch] =  useReducer(CronometroReducer,CronometroInitialState)
+    const saveRankList = usePlayerListStore( (state) => state.saveRankList)
     
     const movePart = (index: number) => {
         if (selects.index != null && moveValid(index) ) {
@@ -68,23 +63,20 @@ const GamePuzzle = () => {
             index == Number(selects.index) - 3)){
             return true
         }
-        
 
         return false
     }
 
-
     useEffect(() => {
-        console.log(ValidPuzzle(parts))
+        if (ValidPuzzle(parts)) {
+            changeSummery()
+        }
     }, [parts])
-
 
     useEffect(() => {
         const interval = setInterval(() => {
             CronometropDispatch({type: "TIME_INCREMENT"})
         },1000)
-
-
         return () => clearInterval(interval)
     }, [])
 
@@ -95,15 +87,32 @@ const GamePuzzle = () => {
         });
     }
 
-    return (
+    const save = (newName: string, newScore: number, time:CronometroType ) => {
+        saveRankList(newName,newScore,time)
+        returnGame()
+        changeSummery()
+    }
 
-        <div className={`w-full max-w-3xl mx-auto p-2 `} > 
-            <div className="w-full per aspect-[4/7] max-w-3xl mx-auto p-2 sm:aspect-[14/10] relative borde
-                            border-yellow-600/20 bg-yellow-600/35 text-primary-content rounded-box flex 
-                            flex-col items-center 
+    const changeSummery = () =>{
+        setOpenSummary(!openSummary)
+    }
+
+    const returnGame = () => {
+        CronometroState.time = CronometroInitialState.time
+        setMovements(0)
+        setParts(scrambledPuzzle(parts))
+        changeSummery()
+    }
+
+    return (
+        <>
+        <ModalSummary open={openSummary} close={changeSummery} movements={movements} time={CronometroState.time}returnGame={returnGame} save={save}/>
+        <div className={`w-full max-w-3xl mx-auto bg-white rounded-box shadow-[0_14px_0_rgba(159,117,29,0.67),_0_4px_6px_rgba(255,255,255,255)]`} > 
+            <div className="w-full per aspect-[4/7] max-w-3xl mx-auto p-2 sm:aspect-[14/10] relative border-3
+                            border-yellow-600/20 bg-yellow-600/35 text-primary-content rounded-box flex flex-col items-center 
                             shadow-[0_15px_0_rgba(159,117,29,0.67),_0_4px_6px_rgba(0,0,0,0.05)] ">
                 
-                <div className="flex flex-col sm:flex-row relative justify-between items-center w-full p-2 h-1/4">
+                <div className="flex flex-col sm:flex-row relative justify-between items-center w-full p-2 h-1/4 gap-2">
                     <ViewPuzzle img={selectImagen}/>
                     <Counters movements={movements} time={CronometroState.time}/>
                 </div>
@@ -116,10 +125,9 @@ const GamePuzzle = () => {
                             shadow-[inset_0_0_10px_4px_rgba(159,117,29,0.67),_inset_0_-6px_10px_rgba(255,255,255,0.7)]
                             transform rotate-x-30 origin-bottom 
                             grid grid-cols-3 gap-2
-                            truncate
+                            truncate 
                         
-                        `}
-                    >
+                        `}>
                         {parts.map((part, index) => (
                         
                             <Part img={selectImagen} key={index} part={part} index={index} changeSelect={changeItemSelect}  move={movePart}/>
@@ -131,6 +139,7 @@ const GamePuzzle = () => {
                 
             </div>
         </div>
+    </>
     )
 }
 
