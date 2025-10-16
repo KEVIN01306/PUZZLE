@@ -17,7 +17,7 @@ type Selects = {
 
 const GamePuzzle = () => {
 
-    const [parts,setParts] = useState<any[]>(scrambledPuzzle([1, 2, 3, 4, 4,5,7, 8, 9]))
+    const [parts,setParts] = useState<any[]>(scrambledPuzzle([1, 2, 3, 4,5,6,7, 8, 9]))
     const [selects, setSelects] = useState<Selects>({
         index: null,
         part: null
